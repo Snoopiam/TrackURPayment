@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jacob&Co Beachfront Living – Unit J307 Payment Tracker</title>
+  <style>
+    /* Base styling from Delphine reference */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 30px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #1a4c5d;
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #2c5f2d;
+      border-bottom: 3px solid #4a9b4f;
+      padding-bottom: 10px;
+      font-size: 1.6em;
+    }
+
+    h3 {
+      margin-top: 25px;
+      color: #1a4c5d;
+      font-size: 1.3em;
+    }
+
+    /* Table styling from Delphine reference */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      margin-top: 15px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      border: none;
+    }
+
+    th, td {
+      border: 1px solid #f0f4f8;
+      padding: 16px 20px;
+      text-align: left;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    th:not(:last-child), td:not(:last-child) {
+      border-right: 1px solid #f0f4f8;
+    }
+
+    tr:not(:last-child) th,
+    tr:not(:last-child) td {
+      border-bottom: 1px solid #f0f4f8;
+    }
+
+    th:first-child { border-top-left-radius: 20px; }
+    th:last-child { border-top-right-radius: 20px; }
+    tr:last-child td:first-child { border-bottom-left-radius: 20px; }
+    tr:last-child td:last-child { border-bottom-right-radius: 20px; }
+
+    th {
+      background: linear-gradient(135deg, #009688 0%, #3f51b5 100%);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9em;
+    }
+
+    .center { text-align: center; }
+
+    /* Status indicators */
+    .highlight {
+      background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+      border-left: 4px solid #009688;
+    }
+
+    .upcoming {
+      background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+      border-left: 4px solid #3f51b5;
+    }
+
+    .countdown {
+      font-size: 1.4em;
+      color: #3f51b5;
+      margin-top: 15px;
+      background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
+      font-weight: bold;
+    }
+
+    .receipt-ref {
+      font-size: 0.75em;
+      color: #6c757d;
+      font-family: 'Courier New', monospace;
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .usd-amount {
+      color: #2980b9;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+
+    /* Overview grid from Delphine reference */
+    .header-info {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border-left: 4px solid #1a4c5d;
+      max-width: 100%;
+    }
+
+    .header-info h3 {
+      margin: 0 0 12px 0;
+      color: #1a4c5d;
+      font-size: 1.4em;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .overview-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      transition: all 0.2s ease;
+      min-height: 55px;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .overview-label {
+      font-size: 0.8em;
+      color: #6c757d;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .overview-value {
+      font-size: 1em;
+      font-weight: bold;
+      color: #2c3e50;
+      line-height: 1.2;
+    }
+
+    .property-theme {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border-left: 3px solid #2196f3;
+    }
+    .property-theme .overview-value { color: #1565c0; }
+
+    .admin-theme {
+      background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+      border-left: 3px solid #757575;
+    }
+    .admin-theme .overview-value { color: #424242; }
+
+    /* Collapsible sections styling from Delphine reference */
+    .payment-section {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      margin: 15px 0;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+      overflow: hidden;
+    }
+
+    .payment-header {
+      padding: 20px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #009688 0%, #3f51b5 100%);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .payment-header:hover {
+      background: linear-gradient(135deg, #00897b 0%, #3949ab 100%);
+      transform: translateY(-2px);
+    }
+
+    .payment-header h3 { margin: 0; color: white; font-size: 1.2em; }
+
+    .payment-summary {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .summary-item { display: flex; flex-direction: column; align-items: center; }
+    .summary-label { font-size: 0.8em; opacity: 0.9; margin-bottom: 4px; }
+    .summary-value { font-size: 1.1em; font-weight: bold; }
+    .expand-icon { font-size: 1.5em; transition: transform 0.3s ease; color: #fff; }
+    .expanded .expand-icon { transform: rotate(180deg); }
+
+    .payment-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      opacity: 0;
+      padding: 0 20px;
+    }
+
+    .payment-content.expanded {
+      max-height: 1000px;
+      opacity: 1;
+      padding: 20px;
+    }
+
+    .date-column { text-align: left !important; }
+    tr:hover { background-color: rgba(0, 150, 136, 0.05); }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      h1 { font-size: 1.8em; }
+      .overview-grid { grid-template-columns: 1fr; gap: 8px; }
+      table { font-size: 0.8em; }
+      th, td { padding: 8px 10px; }
+      .payment-summary { flex-direction: column; gap: 15px; }
+      .summary-item { flex-direction: row; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Jacob&Co Beachfront Living – Unit J307</h1>
+
+  <!-- Property Overview Dashboard -->
+  <div class="header-info">
+    <h3>🏢 Property Overview 💰</h3>
+    <div class="overview-grid">
+      <div class="overview-item property-theme">
+        <div class="overview-label">Purchase Price</div>
+        <div class="overview-value" id="overview_purchasePrice"></div>
+      </div>
+      <div class="overview-item admin-theme">
+        <div class="overview-label">Total Paid (inc. Reg Fee)</div>
+        <div class="overview-value" id="overview_totalPaid"></div>
+      </div>
+      <div class="overview-item property-theme">
+        <div class="overview-label">Remaining Balance</div>
+        <div class="overview-value" id="overview_remainingBalance"></div>
+      </div>
+      <div class="overview-item admin-theme">
+        <div class="overview-label">Paid Towards Property</div>
+        <div class="overview-value" id="overview_paidTowardsProperty"></div>
+      </div>
+    </div>
+    <div style="font-size: 0.8em; color: #6c757d; margin-top: 8px; text-align: center;">
+      * All amounts are in AED. This tracker does not use USD conversion.
+    </div>
+  </div>
+
+  <!-- Payment Plan Table -->
+  <h2>💳 Payment Plan (as per SPA)</h2>
+  <table class="plan-table">
+    <thead>
+      <tr>
+        <th>Installments</th>
+        <th>%</th>
+        <th class="center">Amount (AED)</th>
+        <th class="center">Payment Dates</th>
+        <th class="center">Milestones</th>
+        <th class="center">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td><strong>First payment / Deposit</strong></td>
+        <td class="center">10%</td>
+        <td class="center">353,566</td>
+        <td class="center">05/05/2025</td>
+        <td class="center">Booking Payment</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>Down Payment</strong></td>
+        <td class="center">15%</td>
+        <td class="center">530,349</td>
+        <td class="center">07/08/2025</td>
+        <td class="center">Down Payment</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Third Installment</strong></td>
+        <td class="center">9%</td>
+        <td class="center">318,209</td>
+        <td class="center">07/02/2026</td>
+        <td class="center">Soil investigation & excavation works</td>
+        <td class="center">⏰ Upcoming</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Fourth Installment</strong></td>
+        <td class="center">9%</td>
+        <td class="center">318,209</td>
+        <td class="center">07/08/2026</td>
+        <td class="center">Complete the piling and commence the structural foundation</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Fifth Installment</strong></td>
+        <td class="center">9%</td>
+        <td class="center">318,209</td>
+        <td class="center">07/02/2027</td>
+        <td class="center">Completing the structural works for the basement floor</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Sixth Installment</strong></td>
+        <td class="center">9%</td>
+        <td class="center">318,209</td>
+        <td class="center">07/08/2027</td>
+        <td class="center">Completing the structural works till the 2nd Floor</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Seventh Installment</strong></td>
+        <td class="center">9%</td>
+        <td class="center">318,209</td>
+        <td class="center">07/02/2028</td>
+        <td class="center">Completing the structural works till the 5th Floor</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Last payment</strong></td>
+        <td class="center">30%</td>
+        <td class="center">1,060,697</td>
+        <td class="center">07/08/2028</td>
+        <td class="center">Completion of the work & Delivery of the Unit</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>🧾 Payment Details & Receipt References</h2>
+
+  <!-- Booking Amount Section -->
+  <div class="payment-section">
+    <div class="payment-header" onclick="toggleSection('booking')">
+      <h3>💰 Booking Amount</h3>
+      <div class="payment-summary">
+        <div class="summary-item">
+          <span class="summary-label">Total AED</span>
+          <span class="summary-value" id="booking_total_aed"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Payments</span>
+          <span class="summary-value" id="booking_receipt_count"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Percentage</span>
+          <span class="summary-value" id="booking_percentage"></span>
+        </div>
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="payment-content" id="booking-content">
+      <table class="small-table">
+        <thead>
+          <tr><th class="date-column">Date</th><th class="center">Amount (AED)</th><th class="center">Status</th><th class="center">Receipt Reference</th></tr>
+        </thead>
+        <tbody id="booking_table_body">
+          <!-- Rows will be inserted by script -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Registration Fee Section -->
+  <div class="payment-section">
+    <div class="payment-header" onclick="toggleSection('registration')">
+      <h3>📋 SPA Registration Fees</h3>
+      <div class="payment-summary">
+        <div class="summary-item">
+          <span class="summary-label">Total AED</span>
+          <span class="summary-value" id="reg_total_aed"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Payments</span>
+          <span class="summary-value" id="reg_receipt_count"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Status</span>
+          <span class="summary-value">✅ Paid</span>
+        </div>
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="payment-content" id="registration-content">
+      <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
+        <strong>⚠️ Note:</strong> Registration fees are <strong>additional to the purchase price</strong> and do not count towards property payment milestones.
+      </div>
+      <table class="small-table">
+        <thead>
+          <tr><th class="date-column">Date</th><th class="center">Amount (AED)</th><th class="center">Status</th><th class="center">Receipt Reference</th></tr>
+        </thead>
+        <tbody id="reg_table_body">
+          <!-- Rows will be inserted by script -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Next Payment Section -->
+  <div class="next-payment" style="background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); border-left: 6px solid #3f51b5;">
+    <h2 style="margin-top: 0; border-bottom: none; color: #3f51b5;">⏰ Next Payment 💳</h2>
+    <p><strong>📅 Third Installment</strong></p>
+    <p><strong>Due Date:</strong> <span id="next_payment_date"></span></p>
+    <p><strong>Due Amount:</strong> AED <span id="next_payment_amount"></span></p>
+    <p id="countdown" class="countdown"></p>
+  </div>
+
+  <!-- Footer -->
+  <footer style="margin-top: 50px; padding: 20px; text-align: center; background: rgba(248, 249, 250, 0.5); border-top: 1px solid rgba(224, 224, 224, 0.3);">
+    <p style="margin: 0; color: #8a8a8a; font-size: 0.85em; font-weight: 400; letter-spacing: 0.2px;">
+      Created by <span style="color: #666;">SANOOP SYAMALAN</span> • Associate Director • Kennedy Property Brokers LLC
+    </p>
+  </footer>
+
+  <script>
+    // ========================================
+    // 📝 CONFIGURATION - SINGLE SOURCE OF TRUTH
+    // ========================================
+    const CONFIG = {
+      purchasePrice: 3535657,
+
+      payments: [
+        { category: 'booking', amount: 384151, date: '05-May-2025', receipt: '001-MAK-1BR' },
+        { category: 'booking', amount: 499764, date: '07-Aug-2025', receipt: '002-J-307' },
+        { category: 'registration', amount: 73551, date: '30-Sep-2025', receipt: 'REG-J-307' }
+      ],
+
+      nextPayment: {
+        amount: 318209,
+        date: "07 February 2026",
+        dueDate: new Date("2026-02-07T00:00:00+04:00")
+      }
+    };
+
+    // ========================================
+    // 🤖 SCRIPT - NO NEED TO EDIT BELOW
+    // ========================================
+
+    // --- UTILITY FUNCTIONS ---
+    const formatCurrency = (num) => num.toLocaleString();
+    const getPaymentsByCategory = (category) => CONFIG.payments.filter(p => p.category === category);
+
+    // --- CALCULATIONS ---
+    const bookingPayments = getPaymentsByCategory('booking');
+    const registrationPayments = getPaymentsByCategory('registration');
+
+    const totalBookingPaid = bookingPayments.reduce((sum, p) => sum + p.amount, 0);
+    const totalRegistrationPaid = registrationPayments.reduce((sum, p) => sum + p.amount, 0);
+
+    const paidTowardsProperty = totalBookingPaid;
+    const totalPaid = paidTowardsProperty + totalRegistrationPaid;
+    const remainingBalance = CONFIG.purchasePrice - paidTowardsProperty;
+    const bookingPercentage = (paidTowardsProperty / CONFIG.purchasePrice) * 100;
+
+    // --- DOM MANIPULATION ---
+    function populateOverview() {
+      document.getElementById('overview_purchasePrice').innerText = `AED ${formatCurrency(CONFIG.purchasePrice)}`;
+      document.getElementById('overview_totalPaid').innerText = `AED ${formatCurrency(totalPaid)}`;
+      document.getElementById('overview_remainingBalance').innerText = `AED ${formatCurrency(remainingBalance)}`;
+      document.getElementById('overview_paidTowardsProperty').innerText = `AED ${formatCurrency(paidTowardsProperty)}`;
+    }
+
+    function populateCollapsibleSection(config) {
+      const { category, total_aed_id, receipt_count_id, percentage_id, table_body_id, payments, percentage } = config;
+
+      document.getElementById(total_aed_id).innerText = formatCurrency(payments.reduce((sum, p) => sum + p.amount, 0));
+      document.getElementById(receipt_count_id).innerText = `${payments.length} receipt(s)`;
+      if (percentage_id) {
+        document.getElementById(percentage_id).innerText = `${percentage.toFixed(2)}%`;
+      }
+
+      const tableBody = document.getElementById(table_body_id);
+      tableBody.innerHTML = ''; // Clear existing rows
+      payments.forEach(p => {
+        const row = `
+          <tr>
+            <td class="date-column">${p.date}</td>
+            <td class="center">${formatCurrency(p.amount)}</td>
+            <td class="center">✅ Paid</td>
+            <td class="center receipt-ref">${p.receipt}</td>
+          </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function populateNextPayment() {
+        document.getElementById('next_payment_date').innerText = CONFIG.nextPayment.date;
+        document.getElementById('next_payment_amount').innerText = formatCurrency(CONFIG.nextPayment.amount);
+    }
+
+    function updateCountdown() {
+      const diff = CONFIG.nextPayment.dueDate - new Date();
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "Payment due date has passed!";
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      document.getElementById("countdown").textContent = `⏰ ${days}d, ${hours}h, ${minutes}m, ${seconds}s`;
+    }
+
+    function toggleSection(sectionId) {
+      const content = document.getElementById(sectionId + '-content');
+      content.classList.toggle('expanded');
+      content.previousElementSibling.classList.toggle('expanded');
+    }
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      populateOverview();
+
+      populateCollapsibleSection({
+        category: 'booking',
+        total_aed_id: 'booking_total_aed',
+        receipt_count_id: 'booking_receipt_count',
+        percentage_id: 'booking_percentage',
+        table_body_id: 'booking_table_body',
+        payments: bookingPayments,
+        percentage: bookingPercentage
+      });
+
+      populateCollapsibleSection({
+        category: 'registration',
+        total_aed_id: 'reg_total_aed',
+        receipt_count_id: 'reg_receipt_count',
+        table_body_id: 'reg_table_body',
+        payments: registrationPayments
+      });
+
+      populateNextPayment();
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    });
+  </script>
+
+</body>
+</html>

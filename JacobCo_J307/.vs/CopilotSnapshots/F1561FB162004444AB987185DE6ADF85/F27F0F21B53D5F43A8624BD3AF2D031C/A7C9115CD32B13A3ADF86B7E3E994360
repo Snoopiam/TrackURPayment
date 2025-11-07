@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delphine Beach Residence – Payment Tracker</title>
+  <style>
+    body { font-family: Calibri, sans-serif; padding: 20px; background: #f9f9f9; color: #333; }
+    h2 { margin-top: 30px; }
+    h3 { margin-top: 20px; color: #555; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+    th { background: #f0f0f0; }
+    .highlight { background: #e8ffe8; }
+    .overpaid { color: green; font-weight: bold; }
+    .countdown { font-size: 1.2em; color: #c00; margin-top: 10px; }
+    .payment-details { background: #f8f8f8; margin: 10px 0; padding: 15px; border-radius: 5px; }
+    .verification { background: #e8f4f8; padding: 10px; border-left: 4px solid #007acc; margin: 10px 0; }
+    .small-table { width: 70%; }
+    .amount-right { text-align: right; }
+  </style>
+</head>
+<body>
+
+  <h1>Delphine Beach Residences – Tower B Unit 906</h1>
+  <p><strong>Purchase Price:</strong> AED 3,118,244</p>
+  <p><strong>Total Paid:</strong> AED 1,340,410 (42.99%)</p>
+
+  <h2>Installment Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Installment</th>
+        <th>Amount (AED)</th>
+        <th>% of Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td>Down Payment</td>
+        <td>623,650</td>
+        <td>20.00%</td>
+        <td>Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td>First Installment</td>
+        <td>318,000</td>
+        <td>10.20%</td>
+        <td>Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td>Second Installment</td>
+        <td>398,760</td>
+        <td>12.78%</td>
+        <td>Paid</td>
+      </tr>
+      <tr>
+        <td>Third Installment</td>
+        <td>312,500.80</td>
+        <td>10.00%</td>
+        <td>Upcoming</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Payment Details & Verification</h2>
+  
+  <h3>Down Payment (20.00% - AED 623,650)</h3>
+  <div class="payment-details">
+    <table class="small-table">
+      <thead>
+        <tr><th>Receipt #</th><th class="amount-right">Amount (AED)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="amount-right">65,000</td></tr>
+        <tr><td>2</td><td class="amount-right">110,000</td></tr>
+        <tr><td>3</td><td class="amount-right">102,000</td></tr>
+        <tr><td>4</td><td class="amount-right">37,000</td></tr>
+        <tr><td>5</td><td class="amount-right">124,500</td></tr>
+        <tr><td>6</td><td class="amount-right">92,000</td></tr>
+        <tr><td>7</td><td class="amount-right">38,050</td></tr>
+        <tr><td>8</td><td class="amount-right">55,100</td></tr>
+        <tr style="font-weight: bold; background: #e8ffe8;">
+          <td>Total</td><td class="amount-right">623,650</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="verification">
+      <strong>Verification:</strong> Target 20% = AED 623,648.80 | Actual = AED 623,650 | Variance = +AED 1.20 ✅
+    </div>
+  </div>
+
+  <h3>First Installment (10.20% - AED 318,000)</h3>
+  <div class="payment-details">
+    <table class="small-table">
+      <thead>
+        <tr><th>Receipt #</th><th class="amount-right">Amount (AED)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="amount-right">100,000</td></tr>
+        <tr><td>2</td><td class="amount-right">110,000</td></tr>
+        <tr><td>3</td><td class="amount-right">54,000</td></tr>
+        <tr><td>4</td><td class="amount-right">54,000</td></tr>
+        <tr style="font-weight: bold; background: #e8ffe8;">
+          <td>Total</td><td class="amount-right">318,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="verification">
+      <strong>Verification:</strong> Target 10.2% = AED 318,059.89 | Actual = AED 318,000 | Variance = -AED 59.89 ✅
+    </div>
+  </div>
+
+  <h3>Second Installment (12.78% - AED 398,760)</h3>
+  <div class="payment-details">
+    <table class="small-table">
+      <thead>
+        <tr><th>Receipt #</th><th class="amount-right">Amount (AED)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="amount-right">75,000</td></tr>
+        <tr><td>2</td><td class="amount-right">100,000</td></tr>
+        <tr><td>3</td><td class="amount-right">100,000</td></tr>
+        <tr><td>4</td><td class="amount-right">58,760</td></tr>
+        <tr><td>5</td><td class="amount-right">65,000</td></tr>
+        <tr style="font-weight: bold; background: #e8ffe8;">
+          <td>Total</td><td class="amount-right">398,760</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="verification">
+      <strong>Verification:</strong> Target 12.79% = AED 398,829.39 | Actual = AED 398,760 | Variance = -AED 69.39 ✅
+    </div>
+  </div>
+
+  <h2>Next Payment</h2>
+  <p><strong>Due Date:</strong> 24 March 2026</p>
+  <p><strong>Due Amount:</strong> AED 312,500.80</p>
+  <p id="countdown" class="countdown"></p>
+
+  <h2>Overpayment Check</h2>
+  <p id="overpaidStatus"></p>
+
+  <script>
+    // Set due date
+    const dueDate = new Date("2026-03-24T00:00:00+04:00");
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = dueDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "Payment due date has passed!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("countdown").textContent =
+        `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Check for overpayment
+    const totalPaid = 1340410;
+    const purchasePrice = 3118244;
+    if (totalPaid > purchasePrice) {
+      document.getElementById("overpaidStatus").innerHTML =
+        `Overpaid by AED ${(totalPaid - purchasePrice).toLocaleString()} <span class="overpaid">✅</span>`;
+    } else {
+      document.getElementById("overpaidStatus").textContent = "No overpayment.";
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
+</body>
+</html>

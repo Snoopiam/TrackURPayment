@@ -1,0 +1,35 @@
+# Ignore all PDF files (receipts, invoices, statements)
+*.pdf
+
+# Ignore image files (receipts, screenshots)
+*.jpg
+*.jpeg
+*.png
+
+# Ignore desktop.ini files (Windows system files)
+desktop.ini
+
+# Keep folder structure but ignore contents
+**/Payments/
+**/Downpayment/
+**/First Installment/
+**/Second Installment/
+**/Third Installment/
+**/Fourth Installment/
+
+# VS Code and Visual Studio folders
+.vs/
+.vscode/
+.idea/
+
+# Keep the HTML files and documentation
+!*.html
+!*.md
+!README.md
+
+# Node modules and dependencies (if needed in future)
+node_modules/
+
+# Environment files
+.env
+.env.local

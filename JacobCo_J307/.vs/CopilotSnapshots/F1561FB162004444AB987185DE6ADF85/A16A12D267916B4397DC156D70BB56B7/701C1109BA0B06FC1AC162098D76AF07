@@ -1,0 +1,720 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delphine Beach Residence – Payment Tracker</title>
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      padding: 30px; 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50; 
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    h1 { 
+      color: #1a4c5d;
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: 1px;
+    }
+    
+    h2 { 
+      margin-top: 40px; 
+      color: #2c5f2d;
+      border-bottom: 3px solid #4a9b4f;
+      padding-bottom: 10px;
+      font-size: 1.6em;
+    }
+    
+    h3 { 
+      margin-top: 25px; 
+      color: #1a4c5d;
+      font-size: 1.3em;
+    }
+    
+    table { 
+      border-collapse: collapse; 
+      width: 100%; 
+      margin-top: 15px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    th, td { 
+      border: 1px solid #e1e8ed; 
+      padding: 12px 16px; 
+      text-align: left;
+    }
+    
+    th { 
+      background: linear-gradient(135deg, #1a4c5d 0%, #2c5f2d 100%);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9em;
+    }
+    
+    .highlight { 
+      background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+      border-left: 4px solid #4a9b4f;
+    }
+    
+    .upcoming { 
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border-left: 4px solid #fdcb6e;
+    }
+    
+    .overpaid { 
+      color: #27ae60; 
+      font-weight: bold; 
+    }
+    
+    .countdown { 
+      font-size: 1.4em; 
+      color: #e74c3c; 
+      margin-top: 15px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+      font-weight: bold;
+    }
+    
+    .payment-details { 
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      margin: 15px 0; 
+      padding: 20px; 
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+    }
+    
+    .verification { 
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      padding: 20px; 
+      border-left: 6px solid #2196F3; 
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+    }
+    
+    .small-table { 
+      width: 100%; 
+    }
+    
+    .amount-right { 
+      text-align: right; 
+      font-weight: 600;
+    }
+    
+    .plan-table { 
+      background: #ffffff; 
+      border: 3px solid #1a4c5d; 
+      margin: 25px 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .plan-table th { 
+      background: linear-gradient(135deg, #1a4c5d 0%, #2c5f2d 100%);
+      color: white; 
+      text-align: center;
+      padding: 16px;
+      font-size: 1em;
+    }
+    
+    .center { 
+      text-align: center; 
+    }
+    
+    .receipt-ref { 
+      font-size: 0.75em; 
+      color: #6c757d;
+      font-family: 'Courier New', monospace;
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    .usd-amount { 
+      color: #2980b9; 
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    
+    .currency-note { 
+      font-size: 0.8em; 
+      color: #6c757d; 
+      margin-top: 8px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    
+    .percentage-paid { 
+      color: #2980b9; 
+      font-weight: bold;
+      background: #e3f2fd;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    
+    /* Header styling */
+    .header-info {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      border-left: 6px solid #1a4c5d;
+    }
+    
+    .header-info p {
+      margin: 8px 0;
+      font-size: 1.1em;
+    }
+    
+    /* Next Payment section styling */
+    .next-payment {
+      background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+      padding: 25px;
+      border-radius: 12px;
+      border-left: 6px solid #e74c3c;
+      margin: 25px 0;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.15);
+    }
+    
+    .next-payment p {
+      margin: 10px 0;
+      font-size: 1.1em;
+    }
+    
+    /* Summary section enhancement */
+    .verification h3 {
+      color: #1a4c5d;
+      margin-top: 0;
+    }
+    
+    .verification p {
+      margin: 12px 0;
+      font-size: 1.05em;
+    }
+
+    /* Collapsible sections styling */
+    .payment-section {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      margin: 15px 0;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+      overflow: hidden;
+    }
+
+    .payment-header {
+      padding: 20px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #1a4c5d 0%, #2c5f2d 100%);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .payment-header:hover {
+      background: linear-gradient(135deg, #234a5c 0%, #3a6f3d 100%);
+      transform: translateY(-2px);
+    }
+
+    .payment-header h3 {
+      margin: 0;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .payment-summary {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .summary-label {
+      font-size: 0.8em;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+
+    .expand-icon {
+      font-size: 1.5em;
+      transition: transform 0.3s ease;
+      color: #fff;
+    }
+
+    .expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .payment-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      opacity: 0;
+    }
+
+    .payment-content.expanded {
+      max-height: 1000px;
+      opacity: 1;
+      padding: 20px;
+    }
+
+    .click-hint {
+      font-size: 0.85em;
+      opacity: 0.8;
+      color: #fff;
+      margin-left: 10px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      h1 { font-size: 2em; }
+      table { font-size: 0.9em; }
+      th, td { padding: 8px 10px; }
+      
+      .payment-summary {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .summary-item {
+        flex-direction: row;
+        gap: 10px;
+      }
+    }
+    
+    /* Hover effects */
+    tr:hover {
+      background-color: rgba(26, 76, 93, 0.05);
+      transition: background-color 0.3s ease;
+    }
+    
+    .plan-table tr:hover {
+      background-color: rgba(26, 76, 93, 0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Delphine Beach Residences – Tower B Unit 906</h1>
+  
+  <div class="header-info">
+    <p><strong>Purchase Price:</strong> AED 3,118,244 <span class="usd-amount">(USD 848,985)</span></p>
+    <p><strong>Total Paid:</strong> AED 1,340,410 <span class="usd-amount">(USD 364,930)</span> (42.99%)</p>
+    <p><strong>Registration Fee:</strong> AED 1,000 <span class="usd-amount">(USD 272)</span> <em>(Admin Fee)</em></p>
+    <div class="currency-note">* USD conversion at 1 AED = 0.272 USD (approximate rate)</div>
+  </div>
+
+  <h2>Payment Plan as per SPA</h2>
+  <table class="plan-table">
+    <thead>
+      <tr>
+        <th>Installments</th>
+        <th>%</th>
+        <th>Amount (AED)</th>
+        <th>Amount (USD)</th>
+        <th>Payment Dates</th>
+        <th>Milestones</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td><strong>Booking Amount</strong></td>
+        <td class="center">20%</td>
+        <td class="amount-right">AED 625,001.59</td>
+        <td class="amount-right usd-amount">USD 170,000</td>
+        <td class="center">30/09/2024</td>
+        <td>On Booking date</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>First Installment(*)</strong></td>
+        <td class="center">10%</td>
+        <td class="amount-right">AED 312,500.80</td>
+        <td class="amount-right usd-amount">USD 85,000</td>
+        <td class="center">29/03/2025</td>
+        <td>6 Months from booking date(*)</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>Second Installment(*)</strong></td>
+        <td class="center">10%</td>
+        <td class="amount-right">AED 312,500.80</td>
+        <td class="amount-right usd-amount">USD 85,000</td>
+        <td class="center">25/09/2025</td>
+        <td>12 Months from booking date(*)</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Third Installment(*)</strong></td>
+        <td class="center">10%</td>
+        <td class="amount-right">AED 312,500.80</td>
+        <td class="amount-right usd-amount">USD 85,000</td>
+        <td class="center">24/03/2026</td>
+        <td>18 Months from booking date(*)</td>
+        <td class="center">⏳ Upcoming</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Fourth Installment(*)</strong></td>
+        <td class="center">10%</td>
+        <td class="amount-right">AED 312,500.80</td>
+        <td class="amount-right usd-amount">USD 85,000</td>
+        <td class="center">20/09/2026</td>
+        <td>24 Months from booking date(*)</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Final Installment(*)</strong></td>
+        <td class="center">40%</td>
+        <td class="amount-right">AED 1,250,003.18</td>
+        <td class="amount-right usd-amount">USD 340,001</td>
+        <td class="center">-</td>
+        <td>On Completion(**)</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Actual vs Planned Payment Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Installment</th>
+        <th>Planned Amount (AED)</th>
+        <th>Planned Amount (USD)</th>
+        <th>Actual Paid (AED)</th>
+        <th>Actual Paid (USD)</th>
+        <th>Variance (AED)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td>Down Payment (Booking)</td>
+        <td class="amount-right">AED 625,001.59</td>
+        <td class="amount-right usd-amount">USD 170,000</td>
+        <td class="amount-right">AED 623,650</td>
+        <td class="amount-right usd-amount">USD 169,633</td>
+        <td class="amount-right">-AED 1,351.59</td>
+      </tr>
+      <tr class="highlight">
+        <td>First Installment</td>
+        <td class="amount-right">AED 312,500.80</td>
+        <td class="amount-right usd-amount">USD 85,000</td>
+        <td class="amount-right">AED 318,000</td>
+        <td class="amount-right usd-amount">USD 86,496</td>
+        <td class="amount-right">+AED 5,499.20</td>
+      </tr>
+      <tr class="highlight">
+        <td>Second Installment</td>
+        <td class="amount-right">AED 312,500.80</td>
+        <td class="amount-right usd-amount">USD 85,000</td>
+        <td class="amount-right">AED 398,760</td>
+        <td class="amount-right usd-amount">USD 108,463</td>
+        <td class="amount-right">+AED 86,259.20</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Payment Details & Receipt References</h2>
+  
+  <!-- Down Payment Section -->
+  <div class="payment-section">
+    <div class="payment-header" onclick="toggleSection('downpayment')">
+      <h3>💰 Down Payment (Booking Amount)</h3>
+      <div class="payment-summary">
+        <div class="summary-item">
+          <span class="summary-label">Total AED</span>
+          <span class="summary-value">623,650</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total USD</span>
+          <span class="summary-value">169,633</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Payments</span>
+          <span class="summary-value">8 receipts</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Percentage</span>
+          <span class="summary-value">20.00%</span>
+        </div>
+        <span class="click-hint">Click to view details</span>
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="payment-content" id="downpayment-content">
+      <table class="small-table">
+        <thead>
+          <tr><th>Date</th><th>Amount (AED)</th><th>Amount (USD)</th><th>Status</th><th>Receipt Reference</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>29-Sep-24</td><td class="amount-right">65,000</td><td class="amount-right usd-amount">17,680</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-09-29/R-236837</td></tr>
+          <tr><td>2-Oct-24</td><td class="amount-right">110,000</td><td class="amount-right usd-amount">29,920</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-02/R-237467</td></tr>
+          <tr><td>3-Oct-24</td><td class="amount-right">102,000</td><td class="amount-right usd-amount">27,744</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-03/R-238196</td></tr>
+          <tr><td>4-Oct-24</td><td class="amount-right">37,000</td><td class="amount-right usd-amount">10,064</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-04/R-238479</td></tr>
+          <tr><td>8-Oct-24</td><td class="amount-right">124,500</td><td class="amount-right usd-amount">33,864</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-08/R-238503</td></tr>
+          <tr><td>8-Oct-24</td><td class="amount-right">92,000</td><td class="amount-right usd-amount">25,024</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-08/R-238507</td></tr>
+          <tr><td>9-Oct-24</td><td class="amount-right">38,050</td><td class="amount-right usd-amount">10,350</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-09/R-238677</td></tr>
+          <tr><td>10-Oct-24</td><td class="amount-right">55,100</td><td class="amount-right usd-amount">14,987</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-09/R-238696</td></tr>
+          <tr style="font-weight: bold; background: #e8ffe8;">
+            <td><strong>Total</strong></td><td class="amount-right"><strong>623,650</strong></td><td class="amount-right usd-amount"><strong>169,633</strong></td><td><strong>20.00%</strong></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- First Installment Section -->
+  <div class="payment-section">
+    <div class="payment-header" onclick="toggleSection('first')">
+      <h3>🏦 First Installment</h3>
+      <div class="payment-summary">
+        <div class="summary-item">
+          <span class="summary-label">Total AED</span>
+          <span class="summary-value">318,000</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total USD</span>
+          <span class="summary-value">86,496</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Payments</span>
+          <span class="summary-value">4 receipts</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Percentage</span>
+          <span class="summary-value">10.20%</span>
+        </div>
+        <span class="click-hint">Click to view details</span>
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="payment-content" id="first-content">
+      <table class="small-table">
+        <thead>
+          <tr><th>Date</th><th>Amount (AED)</th><th>Amount (USD)</th><th>Status</th><th>Receipt Reference</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>15-Oct-24</td><td class="amount-right">110,000</td><td class="amount-right usd-amount">29,920</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-10-15/R-240527</td></tr>
+          <tr><td>26-Nov-24</td><td class="amount-right">54,000</td><td class="amount-right usd-amount">14,688</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-11-26/R-443077</td></tr>
+          <tr><td>26-Nov-24</td><td class="amount-right">54,000</td><td class="amount-right usd-amount">14,688</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2024-11-26/R-443081</td></tr>
+          <tr><td>7-Jan-25</td><td class="amount-right">100,000</td><td class="amount-right usd-amount">27,200</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-01-07/R-456514</td></tr>
+          <tr style="font-weight: bold; background: #e8ffe8;">
+            <td><strong>Total</strong></td><td class="amount-right"><strong>318,000</strong></td><td class="amount-right usd-amount"><strong>86,496</strong></td><td><strong>10.20%</strong></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Second Installment Section -->
+  <div class="payment-section">
+    <div class="payment-header" onclick="toggleSection('second')">
+      <h3>🏗️ Second Installment</h3>
+      <div class="payment-summary">
+        <div class="summary-item">
+          <span class="summary-label">Total AED</span>
+          <span class="summary-value">398,760</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total USD</span>
+          <span class="summary-value">108,463</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Payments</span>
+          <span class="summary-value">5 receipts</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Percentage</span>
+          <span class="summary-value">12.79%</span>
+        </div>
+        <span class="click-hint">Click to view details</span>
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="payment-content" id="second-content">
+      <table class="small-table">
+        <thead>
+          <tr><th>Date</th><th>Amount (AED)</th><th>Amount (USD)</th><th>Status</th><th>Receipt Reference</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>4-Feb-25</td><td class="amount-right">100,000</td><td class="amount-right usd-amount">27,200</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-02-04/R-480841</td></tr>
+          <tr><td>15-Feb-25</td><td class="amount-right">58,760</td><td class="amount-right usd-amount">15,983</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-02-15/R-486342</td></tr>
+          <tr><td>5-Mar-25</td><td class="amount-right">65,000</td><td class="amount-right usd-amount">17,680</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-03-05/R-493793</td></tr>
+          <tr><td>23-Apr-25</td><td class="amount-right">75,000</td><td class="amount-right usd-amount">20,400</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-04-23/R-527323</td></tr>
+          <tr><td>3-Jun-25</td><td class="amount-right">100,000</td><td class="amount-right usd-amount">27,200</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-06-03/R-596092</td></tr>
+          <tr style="font-weight: bold; background: #e8ffe8;">
+            <td><strong>Total</strong></td><td class="amount-right"><strong>398,760</strong></td><td class="amount-right usd-amount"><strong>108,463</strong></td><td><strong>12.79%</strong></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Registration Fee Section -->
+  <div class="payment-section">
+    <div class="payment-header" onclick="toggleSection('registration')">
+      <h3>📋 Registration Fee (Additional)</h3>
+      <div class="payment-summary">
+        <div class="summary-item">
+          <span class="summary-label">Total AED</span>
+          <span class="summary-value">1,000</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total USD</span>
+          <span class="summary-value">272</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Payments</span>
+          <span class="summary-value">1 receipt</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Status</span>
+          <span class="summary-value">Paid</span>
+        </div>
+        <span class="click-hint">Click to view details</span>
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="payment-content" id="registration-content">
+      <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
+        <strong>⚠️ Note:</strong> This registration fee is <strong>additional to the purchase price</strong> and does not count towards the property payment milestones.
+      </div>
+      <table class="small-table">
+        <thead>
+          <tr><th>Date</th><th>Amount (AED)</th><th>Amount (USD)</th><th>Status</th><th>Receipt Reference</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>08-May-25</td><td class="amount-right">1,000</td><td class="amount-right usd-amount">272</td><td>Paid</td><td class="receipt-ref">De-BR-DE-B906/2025-05-10/R-598157</td></tr>
+          <tr style="font-weight: bold; background: #e8ffe8;">
+            <td><strong>Total</strong></td><td class="amount-right"><strong>1,000</strong></td><td class="amount-right usd-amount"><strong>272</strong></td><td><strong>Additional Fee</strong></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="next-payment">
+    <h2 style="margin-top: 0; border-bottom: none; color: #e74c3c;">Next Payment</h2>
+    <p><strong>Due Date:</strong> 24 March 2026</p>
+    <p><strong>Due Amount:</strong> AED 312,500.80 <span class="usd-amount">(USD 85,000)</span> (Third Installment)</p>
+    <p id="countdown" class="countdown"></p>
+  </div>
+
+  <div class="verification">
+    <h3>Payment Status Summary</h3>
+    <p><strong>Total Property Payments:</strong> AED 1,340,410 <span class="usd-amount">(USD 364,930)</span> - 42.99% of purchase price</p>
+    <p><strong>Registration Fee (Additional):</strong> AED 1,000 <span class="usd-amount">(USD 272)</span></p>
+    <p><strong>Grand Total Paid:</strong> AED 1,341,410 <span class="usd-amount">(USD 365,202)</span></p>
+    <hr style="margin: 20px 0; border: 1px solid #ddd;">
+    <p><strong>Total Overpayment:</strong> AED 90,407.81 <span class="usd-amount">(USD 24,591)</span></p>
+    <p><strong>Effective Prepayment:</strong> You've paid AED 90,407.81 more than required, which covers approximately 29% of your next installment.</p>
+    <p><strong>Remaining Balance after all installments:</strong> AED 1,777,834 <span class="usd-amount">(USD 483,571)</span></p>
+    <p id="overpaidStatus"></p>
+  </div>
+
+  <footer style="margin-top: 40px; padding: 20px; text-align: center; border-top: 2px solid #e9ecef; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+    <p style="margin: 0; color: #6c757d; font-size: 0.9em;">
+      <strong>Created by SnoopLabs</strong> | Real Estate Payment Tracking System
+    </p>
+    <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.8em;">
+      Developed in C:\SnoopLabs\GitHUB_Apps\RealEstate_apps\Siniya_Island\
+    </p>
+  </footer>
+
+  <script>
+    // Collapsible sections functionality
+    function toggleSection(sectionId) {
+      const content = document.getElementById(sectionId + '-content');
+      const header = content.previousElementSibling;
+      const icon = header.querySelector('.expand-icon');
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        header.classList.remove('expanded');
+      } else {
+        // Close all other sections
+        document.querySelectorAll('.payment-content.expanded').forEach(el => {
+          el.classList.remove('expanded');
+          el.previousElementSibling.classList.remove('expanded');
+        });
+        
+        // Open clicked section
+        content.classList.add('expanded');
+        header.classList.add('expanded');
+      }
+    }
+
+    // Set due date
+    const dueDate = new Date("2026-03-24T00:00:00+04:00");
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = dueDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "Payment due date has passed!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("countdown").textContent =
+        `⏰ ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    }
+
+    // Check for overpayment
+    const totalPaid = 1340410;
+    const purchasePrice = 3118244;
+    const plannedPaidSoFar = 625001.59 + 312500.80 + 312500.80; // 1,250,003.19
+    const overpayment = totalPaid - plannedPaidSoFar;
+    
+    if (overpayment > 0) {
+      document.getElementById("overpaidStatus").innerHTML =
+        `<strong style="color: #27ae60;">💰 Overpaid by AED ${overpayment.toLocaleString()} (USD ${(overpayment * 0.272).toLocaleString()}) ✅</strong><br>
+         <span style="color: #2c5f2d;">🎯 This covers ${((overpayment/312500.80)*100).toFixed(1)}% of your next installment!</span>`;
+    } else {
+      document.getElementById("overpaidStatus").textContent = "No overpayment.";
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
+</body>
+</html>

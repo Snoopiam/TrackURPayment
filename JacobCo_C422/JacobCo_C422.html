@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jacob&Co Beachfront Living – Unit C422 Payment Tracker</title>
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      padding: 30px; 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50; 
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    h1 { 
+      color: #1a4c5d;
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: 1px;
+    }
+    
+    h2 { 
+      margin-top: 40px; 
+      color: #2c5f2d;
+      border-bottom: 3px solid #4a9b4f;
+      padding-bottom: 10px;
+      font-size: 1.6em;
+    }
+    
+    h3 { 
+      margin-top: 25px; 
+      color: #1a4c5d;
+      font-size: 1.3em;
+    }
+    
+    table { 
+      border-collapse: collapse; 
+      width: 100%; 
+      margin-top: 15px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    th, td { 
+      border: 1px solid #e1e8ed; 
+      padding: 12px 16px; 
+      text-align: left;
+    }
+    
+    th { 
+      background: linear-gradient(135deg, #1a4c5d 0%, #2c5f2d 100%);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9em;
+    }
+    
+    .highlight { 
+      background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+      border-left: 4px solid #4a9b4f;
+    }
+    
+    .upcoming { 
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border-left: 4px solid #fdcb6e;
+    }
+    
+    .overpaid { 
+      color: #27ae60; 
+      font-weight: bold; 
+    }
+    
+    .countdown { 
+      font-size: 1.4em; 
+      color: #e74c3c; 
+      margin-top: 15px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+      font-weight: bold;
+    }
+    
+    .center { 
+      text-align: center; 
+    }
+    
+    .amount-right { 
+      text-align: right; 
+      font-weight: 500;
+    }
+    
+    .receipt-ref { 
+      font-size: 0.8em; 
+      color: #6c757d; 
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    .usd-amount { 
+      color: #2980b9; 
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    
+    .currency-note { 
+      font-size: 0.8em; 
+      color: #6c757d; 
+      margin-top: 8px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    
+    .percentage-paid { 
+      color: #2980b9; 
+      font-weight: bold;
+      background: #e3f2fd;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    
+    /* Header styling */
+    .header-info {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      border-left: 6px solid #1a4c5d;
+    }
+    
+    .header-info p {
+      margin: 8px 0;
+      font-size: 1.1em;
+    }
+    
+    /* Next Payment section styling */
+    .next-payment {
+      background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+      padding: 25px;
+      border-radius: 12px;
+      border-left: 6px solid #e74c3c;
+      margin: 25px 0;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.15);
+    }
+    
+    .next-payment p {
+      margin: 10px 0;
+      font-size: 1.1em;
+    }
+    
+    /* Summary section enhancement */
+    .verification h3 {
+      color: #1a4c5d;
+      margin-top: 0;
+    }
+    
+    .verification p {
+      margin: 12px 0;
+      font-size: 1.05em;
+    }
+
+    /* Status indicator styling */
+    .status-pending {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      color: #856404;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.85em;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .status-pending:before {
+      content: "⏳ ";
+    }
+
+    .verification {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      padding: 25px;
+      border-radius: 12px;
+      margin: 25px 0;
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.15);
+      border-left: 6px solid #2196f3;
+    }
+
+    /* Invoice Tracking Table Styling */
+    .tracking-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 10px;
+      border: 2px solid #17a2b8;
+    }
+
+    .tracking-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .tracking-table th {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+      color: white;
+      padding: 12px 8px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .tracking-table td {
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 0.85em;
+    }
+
+    .tracking-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .tracking-table tr:hover {
+      background-color: #e3f2fd;
+    }
+
+    .status-paid {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Jacob&Co Beachfront Living – Unit C422</h1>
+  
+  <div class="header-info">
+    <h3>🏢 Property Overview 💰</h3>
+    <p id="purchasePrice"></p>
+    <p id="totalPaid"></p>
+    <p id="remainingBalance"></p>
+    <p id="registrationFee"></p>
+    <div class="currency-note">* Payment tracking in AED only</div>
+  </div>
+
+  <h2>Payment Plan as per SPA</h2>
+  <table class="plan-table">
+    <thead>
+      <tr>
+        <th>Installments</th>
+        <th>%</th>
+        <th class="center">Amount (AED)</th>
+        <th class="center">Payment Dates</th>
+        <th class="center">Milestones</th>
+        <th class="center">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td><strong>Booking Amount</strong></td>
+        <td class="center">20%</td>
+        <td class="center">647,159</td>
+        <td class="center">30/09/2024</td>
+        <td class="center">On Booking date</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>First Installment</strong></td>
+        <td class="center">10%</td>
+        <td class="center">323,580</td>
+        <td class="center">29/03/2025</td>
+        <td class="center">6 Months from booking date</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>Second Installment</strong></td>
+        <td class="center">10%</td>
+        <td class="center">323,580</td>
+        <td class="center">25/09/2025</td>
+        <td class="center">12 Months from booking date</td>
+        <td class="center">✅ Paid</td>
+      </tr>
+      <tr class="upcoming">
+        <td><strong>Third Installment</strong></td>
+        <td class="center">10%</td>
+        <td class="center">323,580</td>
+        <td class="center">24/03/2026</td>
+        <td class="center">18 Months from booking date</td>
+        <td class="center">⏰ Upcoming</td>
+      </tr>
+      <tr>
+        <td><strong>Fourth Installment</strong></td>
+        <td class="center">10%</td>
+        <td class="center">323,580</td>
+        <td class="center">20/09/2026</td>
+        <td class="center">24 Months from booking date</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+      <tr>
+        <td><strong>Final Installment</strong></td>
+        <td class="center">40%</td>
+        <td class="center">1,294,317</td>
+        <td class="center">-</td>
+        <td class="center">On Completion</td>
+        <td class="center">⏳ Pending</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="next-payment">
+    <h2 style="margin-top: 0; border-bottom: none; color: #e74c3c;">⏰ Next Payment 💳</h2>
+    <p><strong>📅 Third Installment</strong></p>
+    <p><strong>Due Date:</strong> 24 March 2026</p>
+    <p><strong>Due Amount:</strong> AED 323,580</p>
+    <p id="countdown" class="countdown"></p>
+  </div>
+
+  <h2>📋 Invoice-Payment-Receipt Tracking</h2>
+  <div class="tracking-section">
+    <p><strong>Complete Audit Trail:</strong> Every Proforma Invoice ↔ Payment ↔ Receipt</p>
+    
+    <table class="tracking-table">
+      <thead>
+        <tr>
+          <th>Invoice Ref</th>
+          <th>Invoice Type</th>
+          <th>Amount (AED)</th>
+          <th>Payment Date</th>
+          <th>Receipt Ref</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="invoiceTrackingTable">
+        <!-- Populated by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <h2>📋 Payment Summary - Unit C422</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Payment #</th>
+        <th>Payment Category</th>
+        <th class="center">Amount (AED)</th>
+        <th class="center">Status</th>
+        <th class="center">Documents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td><strong>001</strong></td>
+        <td><strong>First Payment</strong></td>
+        <td class="center">📄 From Receipt 001</td>
+        <td class="center">✅ Paid</td>
+        <td class="center">422 001 Receipt</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>002</strong></td>
+        <td><strong>Second Payment</strong></td>
+        <td class="center">📄 From Receipt 002</td>
+        <td class="center">✅ Paid</td>
+        <td class="center">422 002 Receipt</td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>003</strong></td>
+        <td><strong>Third Payment</strong></td>
+        <td class="center">📄 From Receipt 003</td>
+        <td class="center">✅ Paid</td>
+        <td class="center">422 003 Receipt</td>
+      </tr>
+      <tr>
+        <td><strong>REG</strong></td>
+        <td><strong>Registration Fee</strong></td>
+        <td class="center">📄 From REG Invoice</td>
+        <td class="center">⏳ Check Status</td>
+        <td class="center">Proforma Invoice REG</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="payment-details">
+    <h3>� Document Analysis Summary</h3>
+    <p><strong>✅ Confirmed Payments:</strong> 3 receipt documents found (001, 002, 003)</p>
+    <p><strong>📋 Payment Plan:</strong> 2 proforma invoice documents</p>
+    <p><strong>📝 Registration:</strong> 1 registration fee invoice</p>
+    <p><strong>📄 Account Summary:</strong> SOA document available</p>
+    <p><strong>💳 Payment Proof:</strong> Payment screenshot (C422.png)</p>
+    <p><strong>🏦 Bank Confirmation:</strong> Cheque acknowledgement</p>
+  </div>
+
+  <div class="next-payment">
+    <h2 style="margin-top: 0; border-bottom: none; color: #e74c3c;">⏰ Next Steps 📋</h2>
+    <p><strong>🔍 Action Required:</strong> Gather payment information from documents</p>
+    <p><strong>📁 Source:</strong> Review Proforma Invoices and Receipts in JacobCo folder</p>
+    <p><strong>📊 Update:</strong> Use the EASY UPDATE SECTION below to input payment data</p>
+  </div>
+
+  <div class="verification">
+    <h3>Payment Status Summary</h3>
+    <p id="overpaidStatus">📝 <strong>Status:</strong> Payment data collection in progress. Use documents in JacobCo folder to update payment information.</p>
+  </div>
+
+  <footer style="margin-top: 40px; padding: 20px; text-align: center; border-top: 2px solid #e9ecef; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+    <p style="margin: 0; color: #6c757d; font-size: 0.9em;">
+      <strong>Created by SANOOP SYAMALAN</strong> | ASSOCIATE DIRECTOR | KENNEDY PROPERTY BROKERS LLC
+    </p>
+  </footer>
+
+  <script>
+    // ========================================
+    // 📝 EASY UPDATE SECTION - Change values here
+    // ========================================
+    // 
+    // ⚠️  IMPORTANT RULES:
+    // 1. Only change the NUMBERS and DATES inside quotes
+    // 2. Keep all commas (,) and semicolons (;) exactly as they are
+    // 3. Don't delete any quotation marks (" ")
+    // 4. Numbers should NOT have commas (write 1340410 not 1,340,410)
+    // 5. Decimal numbers use dots (.) not commas (write 90406.81 not 90406,81)
+    //
+    // 💡 EXAMPLES OF CORRECT CHANGES:
+    // ✅ CORRECT: totalPaid: 1500000,
+    // ❌ WRONG:   totalPaid: 1,500,000,
+    // ❌ WRONG:   totalPaid: 1500000
+    // ❌ WRONG:   totalPaid 1500000,
+    //
+    const CONFIG = {
+      // 💰 PAYMENT AMOUNTS (in AED - no commas in numbers!)
+      // =====================================================
+      // 📊 BASED ON DOCUMENT ANALYSIS: 3 receipts found
+      
+      payment001: 323580,                // 🔄 UPDATED: Booking 10% 
+                                      // Document Ref: Receipt 1Bed C422 - Booking 10%
+                                      // Amount: AED 323,580
+      
+      payment002: 200000,                // 🔄 UPDATED: Downpayment 15% (First part)
+                                      // Document Ref: Receipt 1Bed C422 - Downpayment 15%
+                                      // Amount: AED 200,000
+      
+      payment003: 285369,                // 🔄 UPDATED: Downpayment 15% (Balance)
+                                      // Document Ref: Receipt 1Bed C422 - Downpayment 15% - Balance
+                                      // Amount: AED 285,369
+      
+      registrationFee: 0,             // 🔄 UPDATE: Amount from Registration Invoice
+                                      // Invoice Ref: [UPDATE WITH ACTUAL INVOICE NUMBER]
+                                      // Example: If fee is 5,000, change to: 5000
+      
+      purchasePrice: 3235796,         // 🔒 FIXED: Unit C422 Purchase Price AED 3,235,796
+      
+      // 📅 NEXT PAYMENT DETAILS (from Proforma Invoices)
+      // =====================================================
+      nextInstallmentAmount: 0,       // 🔄 UPDATE: Next payment from proforma invoice
+                                      // Invoice Ref: [UPDATE WITH ACTUAL INVOICE NUMBER]
+                                      // Check proforma invoices for next installment amount
+      
+      nextPaymentDate: "24 March 2026",  // 🔄 UPDATE: Due date from proforma invoice
+                                      // ⚠️  Format: "DD Month YYYY"
+                                      // Examples: "15 April 2026", "30 December 2025"
+      
+      nextPaymentDueDate: new Date("2026-03-24T00:00:00+04:00"),  // 🔄 UPDATE: Same date, different format
+      
+      // 💱 CURRENCY RATE
+      // =====================================================
+      usdRate: 0.272,                 // 🔄 UPDATE IF NEEDED: Not used for C422 (AED only)
+
+      // 📋 INVOICE-PAYMENT-RECEIPT TRACKING
+      // =====================================================
+      invoiceTracking: [
+        {
+          invoiceRef: "[UPDATE: Booking Invoice Number]",
+          invoiceType: "Booking Amount (10%)",
+          amount: 323580,
+          paymentDate: "[UPDATE: Payment Date]",
+          receiptRef: "Receipt 1Bed C422 - Booking 10%",
+          status: "Paid"
+        },
+        {
+          invoiceRef: "[UPDATE: Downpayment Invoice Number]",
+          invoiceType: "Downpayment (15% - Part 1)",
+          amount: 200000,
+          paymentDate: "[UPDATE: Payment Date]",
+          receiptRef: "Receipt 1Bed C422 - Downpayment 15%",
+          status: "Paid"
+        },
+        {
+          invoiceRef: "[UPDATE: Downpayment Balance Invoice Number]",
+          invoiceType: "Downpayment (15% - Balance)",
+          amount: 285369,
+          paymentDate: "[UPDATE: Payment Date]",
+          receiptRef: "Receipt 1Bed C422 - Downpayment 15% - Balance",
+          status: "Paid"
+        },
+        {
+          invoiceRef: "[UPDATE: Registration Invoice Number]",
+          invoiceType: "Registration Fee",
+          amount: 0, // 🔄 UPDATE: Registration fee amount
+          paymentDate: "[UPDATE: Payment Date]",
+          receiptRef: "[UPDATE: Registration Receipt]",
+          status: "Pending"
+        },
+        {
+          invoiceRef: "[UPDATE: Next Invoice Number]",
+          invoiceType: "Next Installment",
+          amount: 0, // 🔄 UPDATE: From proforma invoice
+          paymentDate: "Pending",
+          receiptRef: "Pending",
+          status: "Pending"
+        }
+      ]
+    };
+    
+    // 📋 C422 SPECIFIC INSTRUCTIONS:
+    // ==============================
+    // 
+    // 📄 DOCUMENT REFERENCE GUIDE:
+    // =============================
+    // 1. Open Receipt PDF #1 → Find official receipt number → Update "Document Ref" comment → Extract AED amount → Update payment001
+    // 2. Open Receipt PDF #2 → Find official receipt number → Update "Document Ref" comment → Extract AED amount → Update payment002  
+    // 3. Open Receipt PDF #3 → Find official receipt number → Update "Document Ref" comment → Extract AED amount → Update payment003
+    // 4. Open Registration Invoice → Find invoice number → Update "Invoice Ref" comment → Extract AED amount → Update registrationFee
+    // 5. Open "SOA - 422 - C" → Verify total matches → Cross-check
+    // 6. Open "002 Proforma Invoice - J&CO. C - 422" → Find next due amount → Update nextInstallmentAmount
+    //
+    // 🧮 AUTO-CALCULATION:
+    // totalPaid = payment001 + payment002 + payment003 + registrationFee
+    // remainingBalance = purchasePrice - totalPaid
+    // overpayment = if totalPaid > expectedPaidSoFar, show difference
+    
+    // 📋 QUICK REFERENCE - JACOB&CO C422 SPECIFIC:
+    // ==========================================
+    // 
+    // 🏦 WHEN COLLECTING PAYMENT DATA:
+    // 1. Check Proforma Invoices in JacobCo folder
+    // 2. Update totalPaid with sum of all payments made
+    // 3. Update registrationFee if any admin fees paid
+    // 4. Update nextInstallmentAmount from latest invoice
+    //
+    // 📄 DOCUMENT REFERENCE:
+    // - Look for "C422" or "C - 422" in document names
+    // - Check Receipt files for payment amounts
+    // - Check Proforma Invoice files for due amounts
+    //
+    // ========================================
+    // 🛑 END OF EASY UPDATE SECTION
+    // ❌ DON'T CHANGE ANYTHING BELOW THIS LINE
+    // ========================================
+
+    // Set due date for countdown timer
+    const dueDate = CONFIG.nextPaymentDueDate;
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = dueDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "Payment due date has passed!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("countdown").textContent =
+        `⏰ ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    }
+
+    // Populate Invoice Tracking Table
+    function updateInvoiceTracking() {
+      const tableBody = document.getElementById("invoiceTrackingTable");
+      tableBody.innerHTML = "";
+
+      CONFIG.invoiceTracking.forEach(invoice => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+          <td><strong>${invoice.invoiceRef}</strong></td>
+          <td>${invoice.invoiceType}</td>
+          <td class="amount-right">AED ${invoice.amount.toLocaleString()}</td>
+          <td>${invoice.paymentDate}</td>
+          <td>${invoice.receiptRef}</td>
+          <td><span class="status-${invoice.status.toLowerCase()}">${invoice.status}</span></td>
+        `;
+      });
+    }
+
+    // Calculate derived values
+    const payment001 = CONFIG.payment001;
+    const payment002 = CONFIG.payment002;
+    const payment003 = CONFIG.payment003;
+    const registrationFee = CONFIG.registrationFee;
+    const totalPaid = payment001 + payment002 + payment003 + registrationFee;
+    const purchasePrice = CONFIG.purchasePrice;
+    const remainingBalance = purchasePrice - totalPaid;
+    
+    // Calculate overpayment (if any) - would need expected payment schedule
+    const overpayment = 0; // To be calculated based on payment schedule
+    
+    // Populate header information dynamically
+    document.getElementById("purchasePrice").innerHTML = 
+      `<strong>Purchase Price:</strong> AED ${purchasePrice.toLocaleString()}`;
+    
+    document.getElementById("totalPaid").innerHTML = 
+      `<strong>Total Paid:</strong> AED ${totalPaid.toLocaleString()} (${totalPaid > 0 ? ((totalPaid/purchasePrice)*100).toFixed(2) : '0.00'}%)`;
+    
+    document.getElementById("remainingBalance").innerHTML = 
+      `<strong>Remaining Balance:</strong> AED ${remainingBalance.toLocaleString()} (${((remainingBalance/purchasePrice)*100).toFixed(2)}%)`;
+    
+    document.getElementById("registrationFee").innerHTML = 
+      `<strong>Registration Fee:</strong> AED ${registrationFee.toLocaleString()} ${registrationFee > 0 ? '✅ Paid' : '⏳ Pending'}`;
+    
+    // Payment breakdown display
+    if (totalPaid > 0) {
+      let paymentBreakdown = '<br><strong>📊 Payment Breakdown:</strong><br>';
+      if (payment001 > 0) paymentBreakdown += `• Payment 001: AED ${payment001.toLocaleString()}<br>`;
+      if (payment002 > 0) paymentBreakdown += `• Payment 002: AED ${payment002.toLocaleString()}<br>`;
+      if (payment003 > 0) paymentBreakdown += `• Payment 003: AED ${payment003.toLocaleString()}<br>`;
+      if (registrationFee > 0) paymentBreakdown += `• Registration Fee: AED ${registrationFee.toLocaleString()}<br>`;
+      
+      document.getElementById("overpaidStatus").innerHTML = 
+        `<strong>📊 Payment Progress:</strong> AED ${totalPaid.toLocaleString()} paid (${((totalPaid/purchasePrice)*100).toFixed(2)}% of total purchase price)${paymentBreakdown}`;
+    } else {
+      document.getElementById("overpaidStatus").innerHTML = 
+        `<strong>📝 Status:</strong> No payment data entered yet. Please update the EASY UPDATE SECTION above with amounts from the receipt documents.`;
+    }
+
+    // Initialize all tracking systems
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+    updateInvoiceTracking();
+  </script>
+
+</body>
+</html>

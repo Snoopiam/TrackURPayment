@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delphine Beach Residence – Payment Tracker</title>
+  <style>
+    body { font-family: Calibri, sans-serif; padding: 20px; background: #f9f9f9; color: #333; }
+    h2 { margin-top: 30px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+    th { background: #f0f0f0; }
+    .highlight { background: #e8ffe8; }
+    .overpaid { color: green; font-weight: bold; }
+    .countdown { font-size: 1.2em; color: #c00; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Delphine Beach Residences – Tower B Unit 906</h1>
+  <p><strong>Purchase Price:</strong> AED 3,118,244</p>
+  <p><strong>Total Paid:</strong> AED 1,340,410 (42.99%)</p>
+
+  <h2>Installment Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Installment</th>
+        <th>Amount (AED)</th>
+        <th>% of Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td>Down Payment</td>
+        <td>623,650</td>
+        <td>20.00%</td>
+        <td>Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td>First Installment</td>
+        <td>318,000</td>
+        <td>10.20%</td>
+        <td>Paid</td>
+      </tr>
+      <tr class="highlight">
+        <td>Second Installment</td>
+        <td>398,760</td>
+        <td>12.78%</td>
+        <td>Paid</td>
+      </tr>
+      <tr>
+        <td>Third Installment</td>
+        <td>312,500.80</td>
+        <td>10.00%</td>
+        <td>Upcoming</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Next Payment</h2>
+  <p><strong>Due Date:</strong> 24 March 2026</p>
+  <p><strong>Due Amount:</strong> AED 312,500.80</p>
+  <p id="countdown" class="countdown"></p>
+
+  <h2>Overpayment Check</h2>
+  <p id="overpaidStatus"></p>
+
+  <script>
+    // Set due date
+    const dueDate = new Date("2026-03-24T00:00:00+04:00");
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = dueDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "Payment due date has passed!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("countdown").textContent =
+        `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Check for overpayment
+    const totalPaid = 1340410;
+    const purchasePrice = 3118244;
+    if (totalPaid > purchasePrice) {
+      document.getElementById("overpaidStatus").innerHTML =
+        `Overpaid by AED ${(totalPaid - purchasePrice).toLocaleString()} <span class="overpaid">✅</span>`;
+    } else {
+      document.getElementById("overpaidStatus").textContent = "No overpayment.";
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
+</body>
+</html>

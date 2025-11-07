@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Tracker Generator - Drag-Drop Admin (Mockup)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      min-height: 90vh;
+    }
+
+    /* Left Side - Component Palette */
+    .palette-panel {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .palette-header {
+      margin-bottom: 24px;
+    }
+
+    .palette-header h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .palette-header p {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .component-category {
+      margin-bottom: 24px;
+    }
+
+    .category-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      margin-bottom: 12px;
+    }
+
+    .component {
+      background: rgba(255,255,255,0.1);
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      cursor: move;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .component:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateX(5px);
+    }
+
+    .component-icon {
+      font-size: 20px;
+    }
+
+    .component-info h4 {
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .component-info p {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    /* Center - Canvas Area */
+    .canvas-panel {
+      background: #ecf0f1;
+      padding: 30px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .canvas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .canvas-header h2 {
+      font-size: 18px;
+      color: #2c3e50;
+    }
+
+    .canvas-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: #f8f9fa;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .icon-btn:hover {
+      background: #e9ecef;
+      transform: scale(1.1);
+    }
+
+    .canvas-workspace {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      min-height: 800px;
+      padding: 40px;
+      position: relative;
+    }
+
+    .drop-zone {
+      border: 2px dashed #bdc3c7;
+      border-radius: 8px;
+      padding: 40px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #95a5a6;
+      transition: all 0.3s;
+    }
+
+    .drop-zone:hover {
+      border-color: #f093fb;
+      background: #fef5ff;
+    }
+
+    .drop-zone.active {
+      border-color: #f5576c;
+      background: #fff0f3;
+    }
+
+    .placed-component {
+      border: 2px solid #3498db;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .placed-component:hover {
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .placed-component.selected {
+      border-color: #f093fb;
+      box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
+    }
+
+    .component-label {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #3498db;
+      color: white;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .component-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .placed-component:hover .component-actions {
+      opacity: 1;
+    }
+
+    .component-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: rgba(0,0,0,0.1);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* Right Side - Properties Panel */
+    .properties-panel {
+      background: #f8f9fa;
+      padding: 20px;
+      border-left: 1px solid #e0e0e0;
+      overflow-y: auto;
+    }
+
+    .properties-header {
+      margin-bottom: 24px;
+    }
+
+    .properties-header h2 {
+      font-size: 18px;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .properties-header p {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+
+    .property-group {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .property-group h4 {
+      font-size: 13px;
+      color: #2c3e50;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    .property-field {
+      margin-bottom: 12px;
+    }
+
+    .property-field label {
+      display: block;
+      font-size: 11px;
+      color: #7f8c8d;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .property-field input,
+    .property-field select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .color-swatch {
+      width: 100%;
+      height: 40px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #e74c3c;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-left: 8px;
+    }
+
+    /* Commentary Box */
+    .commentary {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 16px;
+      margin: 20px;
+      border-radius: 4px;
+    }
+
+    .commentary h4 {
+      font-size: 14px;
+      color: #2e7d32;
+      margin-bottom: 8px;
+    }
+
+    .commentary ul {
+      margin-left: 20px;
+      color: #2e7d32;
+      font-size: 13px;
+    }
+
+    .commentary li {
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- LEFT PANEL: Component Palette -->
+    <div class="palette-panel">
+      <div class="palette-header">
+        <h2>Components <span class="badge">DRAG-DROP</span></h2>
+        <p>Drag components to canvas</p>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">Header</div>
+        <div class="component">
+          <div class="component-icon">🏢</div>
+          <div class="component-info">
+            <h4>Logo</h4>
+            <p>Brand image</p>
+          </div>
+        </div>
+        <div class="component">
+          <div class="component-icon">📝</div>
+          <div class="component-info">
+            <h4>Title</h4>
+            <p>Property name</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">Overview</div>
+        <div class="component">
+          <div class="component-icon">📊</div>
+          <div class="component-info">
+            <h4>Dashboard</h4>
+            <p>Key metrics</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">Payment</div>
+        <div class="component">
+          <div class="component-icon">📅</div>
+          <div class="component-info">
+            <h4>Payment Plan</h4>
+            <p>Installment table</p>
+          </div>
+        </div>
+        <div class="component">
+          <div class="component-icon">💰</div>
+          <div class="component-info">
+            <h4>Payment Section</h4>
+            <p>Collapsible group</p>
+          </div>
+        </div>
+        <div class="component">
+          <div class="component-icon">⏰</div>
+          <div class="component-info">
+            <h4>Countdown</h4>
+            <p>Next payment timer</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">Footer</div>
+        <div class="component">
+          <div class="component-icon">👤</div>
+          <div class="component-info">
+            <h4>Contact Info</h4>
+            <p>Agent details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: Canvas Area -->
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <h2>Canvas - Design Your Tracker</h2>
+        <div class="canvas-actions">
+          <button class="icon-btn" title="Undo">↶</button>
+          <button class="icon-btn" title="Redo">↷</button>
+          <button class="icon-btn" title="Preview">👁️</button>
+          <button class="icon-btn" title="Save">💾</button>
+        </div>
+      </div>
+
+      <div class="canvas-workspace">
+        <!-- Example: Placed components -->
+        <div class="placed-component selected">
+          <span class="component-label">LOGO</span>
+          <div class="component-actions">
+            <button class="component-btn">↑</button>
+            <button class="component-btn">↓</button>
+            <button class="component-btn">🗑️</button>
+          </div>
+          <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 4px;">
+            <div style="font-size: 48px;">🏢</div>
+            <p style="color: #7f8c8d; margin-top: 8px;">Jacob&Co Logo</p>
+          </div>
+        </div>
+
+        <div class="placed-component">
+          <span class="component-label">TITLE</span>
+          <div class="component-actions">
+            <button class="component-btn">↑</button>
+            <button class="component-btn">↓</button>
+            <button class="component-btn">🗑️</button>
+          </div>
+          <h1 style="text-align: center; color: #2c3e50;">Jacob&Co Beachfront Living</h1>
+          <p style="text-align: center; color: #7f8c8d; margin-top: 8px;">Premium Beachfront Residence - Unit C422</p>
+        </div>
+
+        <div class="drop-zone">
+          <p>📦 Drop components here</p>
+          <p style="font-size: 12px; margin-top: 8px;">Drag from left panel to add more sections</p>
+        </div>
+      </div>
+
+      <!-- Commentary in canvas -->
+      <div class="commentary">
+        <h4>🎨 Drag-Drop Approach - Key Features:</h4>
+        <ul>
+          <li><strong>✅ Maximum Flexibility:</strong> Full layout control</li>
+          <li><strong>✅ Visual Design:</strong> WYSIWYG experience</li>
+          <li><strong>✅ Advanced Customization:</strong> Unlimited possibilities</li>
+          <li><strong>⚠️ Complex Development:</strong> 1-2 weeks to build</li>
+          <li><strong>⚠️ Learning Curve:</strong> More features to learn</li>
+          <li><strong>⚠️ State Management:</strong> Complex positioning logic</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Properties -->
+    <div class="properties-panel">
+      <div class="properties-header">
+        <h2>Properties</h2>
+        <p>Configure selected component</p>
+      </div>
+
+      <div class="property-group">
+        <h4>Logo Settings</h4>
+        <div class="property-field">
+          <label>Image Upload</label>
+          <input type="file" accept="image/*">
+        </div>
+        <div class="property-field">
+          <label>Width (px)</label>
+          <input type="number" value="180">
+        </div>
+        <div class="property-field">
+          <label>Alignment</label>
+          <select>
+            <option>Center</option>
+            <option>Left</option>
+            <option>Right</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="property-group">
+        <h4>Spacing</h4>
+        <div class="property-field">
+          <label>Margin Top (px)</label>
+          <input type="number" value="20">
+        </div>
+        <div class="property-field">
+          <label>Margin Bottom (px)</label>
+          <input type="number" value="30">
+        </div>
+      </div>
+
+      <div class="property-group">
+        <h4>Background</h4>
+        <div class="property-field">
+          <label>Background Color</label>
+          <div class="color-grid">
+            <input type="color" class="color-swatch" value="#ffffff">
+            <input type="text" value="#ffffff">
+          </div>
+        </div>
+      </div>
+
+      <div class="property-group">
+        <h4>Actions</h4>
+        <button style="width: 100%; padding: 10px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Apply Changes</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
